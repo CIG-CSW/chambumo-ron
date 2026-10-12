@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chambumo-Ron | Research Query Tool</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Deep slate */
+            color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="mb-10 text-center md:text-left">
+            <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-2">Chambumo-Ron Insights</h1>
+            <p class="text-slate-400 text-sm md:text-base max-w-2xl">Interactive research dashboard exploring the epic history of the Han People, the providence of Heaven, and the words of True Parents.</p>
+        </header>
+
+        <!-- Search and Filter Section -->
+        <section class="mb-10 sticky top-4 z-10">
+            <div class="glass-card p-4 md:p-6 rounded-2xl shadow-2xl">
+                <!-- Search Input -->
+                <div class="relative mb-6">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="text" id="searchInput" class="w-full pl-12 pr-4 py-4 bg-slate-800/80 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-inner text-lg" placeholder="Search notebook data (e.g., True Parents, Han people, Jesus)...">
+                </div>
+
+                <!-- Filters -->
+                <div class="flex flex-nowrap overflow-x-auto pb-2 scrollbar-hide space-x-3" id="filterContainer">
+                    <button class="filter-btn active px-5 py-2 rounded-full text-sm font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-500/30 border border-blue-500" data-filter="All">All Topics</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600 hover:text-white" data-filter="Providence & History">Providence & History</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600 hover:text-white" data-filter="True Parents">True Parents</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600 hover:text-white" data-filter="Korean Heritage">Korean Heritage</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600 hover:text-white" data-filter="Christianity">Christianity</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Dashboard -->
+        <section>
+            <div class="flex justify-between items-end mb-4 px-2">
+                <h2 class="text-xl font-semibold text-slate-200">Results Dashboard</h2>
+                <span id="resultsCount" class="text-sm text-slate-400 font-medium">0 results</span>
+            </div>
+            <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be injected here via JavaScript -->
+            </div>
+        </section>
+    </div>
+
+    <!-- JavaScript for Data and Interactivity -->
+    <script>
+        // Research Data Extracted from Notebook Sources
+        const notebookData = [
+            {
+                id: 1,
+                category: "Providence & History",
+                title: "The 4,000-Year Preparation",
+                content: "After selecting the people of Israel as the chosen people, Heavenly Parent had to guide the work to indemnify what had gone wrong. It was not until a national foundation was formed that Heavenly Parent was able to send the Only Begotten Son Jesus Christ whom Heavenly Parent could call 'my son.' It took 4,000 years of biblical history."
+            },
+            {
+                id: 2,
+                category: "True Parents",
+                title: "The Meeting of True Parents",
+                content: "Heavenly Parent sent the Only Begotten Son, Jesus, but could not send the Only Begotten Daughter at that time. Jesus was meant to meet the Only Begotten Daughter so that together they could become the True Parents and create the environment in which people could attend Heavenly Parent."
+            },
+            {
+                id: 3,
+                category: "Christianity",
+                title: "John Calvin and the Reformation",
+                content: "In the 16th century, John Calvin formulated his teachings related to the Reformation and in 1543 wrote his treatise The Necessity of Reforming the Church. Four hundred years later, in 1943, Heaven sent the Only Begotten Daughter within the community of Christian faithful in Korea."
+            },
+            {
+                id: 4,
+                category: "Korean Heritage",
+                title: "The Founding Legend of Dangun",
+                content: "The Han people's sacred connection to Heaven stretches back to their very origins. Their founding legend speaks of Dangun, who established a nation guided by the noble ideal of hong-ik in-gan—devotion to the welfare of all humankind. This became the philosophical foundation of a culture that maintained its identity through millennia."
+            },
+            {
+                id: 5,
+                category: "True Parents",
+                title: "Birth of the Only Begotten Daughter",
+                content: "The Only Begotten Daughter, True Mother, was born into a family with three generations of only daughters and a strong Christian foundation. Born in 1943, her birth marked the decisive moment that concluded Heavenly Parent's 6,000-year history of the providence of salvation."
+            },
+            {
+                id: 6,
+                category: "Korean Heritage",
+                title: "Ritual Offerings to Heaven",
+                content: "The Han people worshipped and offered rituals to Heaven (Heavenly Parent), including prayers for good harvests and for peace. During the time of the kingdom of Gojoseon, they conducted such rituals, feeling themselves to be descendants of Heaven (Cheonson), establishing a peace-loving culture."
+            },
+            {
+                id: 7,
+                category: "Providence & History",
+                title: "The Dong-yi People and the Han Dynasty",
+                content: "One of the tribes among the descendants of the Semites moved to East Asia and later settled on the Korean Peninsula becoming the Han people. The Han dynasty of ancient Korea emerged from the Dong-yi (Eastern Yi) People who had migrated eastward, laying the groundwork for the spiritual destiny of the Han people."
+            },
+            {
+                id: 8,
+                category: "Christianity",
+                title: "The Essence of Christian History",
+                content: "The essence of the 2,000 years of Christian history, which began with the resurrection of Jesus and the descent of the Holy Spirit, is to prepare for the birth of the Only Begotten Daughter coming for the first time, while waiting for the Second Coming of the Messiah for the Marriage Supper of the Lamb."
+            },
+            {
+                id: 9,
+                category: "True Parents",
+                title: "Ideal of True Parents in Creation",
+                content: "God's original purpose of creation was for Adam to become the True Father of humankind and for Eve to become the True Mother of humankind. In order to return to the purpose of creation, God had to carry out the providence of re-creating Adam through the birth of Jesus."
+            },
+            {
+                id: 10,
+                category: "Korean Heritage",
+                title: "The Hyojeong (Filial Heart) Culture",
+                content: "The hyojeong (filial heart) of the Han people, expressed in the loving response of children in gratitude for the profound love they have received from their parents, resulted in historical texts and legends of filial piety. Revering the Heavenly Parent, they considered filial piety as the fundamental virtue."
+            },
+            {
+                id: 11,
+                category: "Christianity",
+                title: "Korean Christianity's Unique Root",
+                content: "Unlike many other nations where the Christian faith arrived through foreign missionaries, Korea's earliest Christians sought out the gospel themselves, traveling to China to learn about Christ and returning to establish churches even before the evangelism of Western missionaries began to bear fruit."
+            },
+            {
+                id: 12,
+                category: "Providence & History",
+                title: "The Pacific Rim Civilization",
+                content: "The Pacific Rim civilization is the final destination of history and of all civilizations. At its center lies the Korean Peninsula, where the Will of the Heavenly Parent, the Creator, can finally be fulfilled. A historic new era will dawn welcoming the liberation of our Heavenly Parent's homeland."
+            }
+        ];
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const resultsCount = document.getElementById('resultsCount');
+
+        // State
+        let currentFilter = 'All';
+        let searchQuery = '';
+
+        // Category Badge Colors
+        const getCategoryStyles = (category) => {
+            const styles = {
+                'Providence & History': 'bg-purple-900/50 text-purple-300 border-purple-700/50',
+                'True Parents': 'bg-emerald-900/50 text-emerald-300 border-emerald-700/50',
+                'Korean Heritage': 'bg-amber-900/50 text-amber-300 border-amber-700/50',
+                'Christianity': 'bg-sky-900/50 text-sky-300 border-sky-700/50'
+            };
+            return styles[category] || 'bg-slate-700 text-slate-300 border-slate-600';
+        };
+
+        // Render Function
+        const renderCards = () => {
+            // Filter Data
+            const filteredData = notebookData.filter(item => {
+                const matchesFilter = currentFilter === 'All' || item.category === currentFilter;
+                const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      item.content.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            // Update Count
+            resultsCount.textContent = `${filteredData.length} result${filteredData.length !== 1 ? 's' : ''}`;
+
+            // Generate HTML
+            if (filteredData.length === 0) {
+                resultsGrid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-16 text-slate-500">
+                        <svg class="w-16 h-16 mb-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-lg">No insights found matching your criteria.</p>
+                        <button onclick="clearSearch()" class="mt-4 text-blue-400 hover:text-blue-300 transition-colors">Clear search</button>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsGrid.innerHTML = filteredData.map(item => `
+                <div class="glass-card rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(59,130,246,0.2)] group flex flex-col h-full border border-slate-700 hover:border-slate-500">
+                    <div class="mb-4">
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-medium border ${getCategoryStyles(item.category)}">
+                            ${item.category}
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white mb-3 group-hover:text-blue-400 transition-colors">${item.title}</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed flex-grow">${item.content}</p>
+                </div>
+            `).join('');
+        };
+
+        // Event Listeners
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderCards();
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update active button styles
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30', 'border-blue-500');
+                    b.classList.add('bg-slate-800', 'text-slate-300', 'border-slate-600');
+                });
+                
+                const target = e.target;
+                target.classList.remove('bg-slate-800', 'text-slate-300', 'border-slate-600');
+                target.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30', 'border-blue-500');
+                
+                currentFilter = target.getAttribute('data-filter');
+                renderCards();
+            });
+        });
+
+        // Helper function for empty state
+        window.clearSearch = () => {
+            searchInput.value = '';
+            searchQuery = '';
+            renderCards();
+        };
+
+        // Initial Render
+        renderCards();
+    </script>
+</body>
+</html>
