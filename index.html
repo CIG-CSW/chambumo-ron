@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chambumo-Ron | NotebookLM Query Interface</title>
+    <title>Chambumo-Ron | Notebook AI Query</title>
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
@@ -46,27 +46,32 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
     <!-- Header -->
-    <header class="flex-none bg-slate-800/80 backdrop-blur-md border-b border-slate-700 p-4 md:px-8 z-10">
+    <header class="flex-none bg-slate-800/80 backdrop-blur-md border-b border-slate-700 p-4 md:px-8 z-10 shadow-lg">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
                     <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     Chambumo-Ron Notebook
                 </h1>
-                <p class="text-slate-400 text-sm mt-1">Interactive Research Query Tool</p>
+                <p class="text-slate-400 text-sm mt-1">AI-Powered Research Assistant</p>
             </div>
             
-            <!-- Filters -->
-            <div class="flex overflow-x-auto scrollbar-hide space-x-2 pb-1" id="filterContainer">
-                <button class="filter-btn active px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-500/30 border border-blue-500" data-filter="All">All Topics</button>
-                <button class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600" data-filter="Providence & History">Providence & History</button>
-                <button class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600" data-filter="True Parents">True Parents</button>
-                <button class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600" data-filter="Korean Heritage">Korean Heritage</button>
+            <!-- Quick Suggestion Filters -->
+            <div class="flex overflow-x-auto scrollbar-hide space-x-2 pb-1 w-full md:w-auto" id="filterContainer">
+                <button class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white border border-slate-600 hover:border-blue-500 whitespace-nowrap" onclick="setQuery('What is the significance of Cheon Won Gung?')">Cheon Won Gung</button>
+                <button class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white border border-slate-600 hover:border-blue-500 whitespace-nowrap" onclick="setQuery('Who are the True Parents?')">True Parents</button>
+                <button class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white border border-slate-600 hover:border-blue-500 whitespace-nowrap" onclick="setQuery('Explain the concept of Hyojeong')">Hyojeong Culture</button>
             </div>
         </div>
     </header>
@@ -74,29 +79,38 @@
     <!-- Chat / Results Dashboard -->
     <main class="flex-grow overflow-y-auto p-4 md:p-8 scrollbar-hide" id="chatArea">
         <div class="max-w-5xl mx-auto flex flex-col gap-6 pb-24" id="resultsGrid">
+            
             <!-- Initial Welcome Message -->
             <div class="flex gap-4 message-enter">
                 <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                 </div>
-                <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl rounded-tl-none max-w-[85%] shadow-md">
-                    <h3 class="text-white font-semibold mb-2">Welcome to the Chambumo-Ron Notebook.</h3>
-                    <p class="text-slate-300 leading-relaxed text-sm md:text-base">
-                        I am loaded with the "Chambumo-Ron" research documents covering the epic history of the Han People, the providence of Heaven, and the words of True Parents. 
-                        <br><br>
-                        You can search for specific topics, ask questions, or select a category filter above. Type your query below and click "Submit" to explore the insights.
+                <div class="glass-card p-5 rounded-2xl rounded-tl-none max-w-[85%] shadow-md">
+                    <h3 class="text-white font-semibold mb-2">Welcome to your AI Research Notebook.</h3>
+                    <p class="text-slate-300 leading-relaxed text-sm md:text-base mb-3">
+                        I am connected to your Google Apps Script backend and fully loaded with the "Chambumo-Ron" research documents. I can answer questions about:
+                    </p>
+                    <ul class="list-disc list-inside text-slate-400 text-sm space-y-1 mb-4">
+                        <li>The epic history of the Han People and Korea</li>
+                        <li>The providence of Heaven and Christian history</li>
+                        <li>The teachings, words, and life courses of True Parents</li>
+                        <li>The establishment of Cheon Il Guk and the Cheonil Sanctum</li>
+                    </ul>
+                    <p class="text-slate-300 text-sm md:text-base">
+                        Type a question below or click a suggestion pill above to begin your research!
                     </p>
                 </div>
             </div>
+
         </div>
     </main>
 
     <!-- Sticky Input Area -->
     <footer class="flex-none p-4 bg-slate-900 border-t border-slate-800 absolute bottom-0 w-full z-20">
-        <div class="max-w-5xl mx-auto relative flex items-center">
+        <div class="max-w-5xl mx-auto relative flex items-center shadow-2xl">
             <input type="text" id="searchInput" 
-                class="w-full pl-5 pr-32 py-4 bg-slate-800 border border-slate-600 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-inner text-base md:text-lg" 
-                placeholder="Ask your notebook (e.g., 'What is the Dangun legend?')..."
+                class="w-full pl-5 pr-32 py-4 bg-slate-800 border border-slate-600 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base md:text-lg" 
+                placeholder="Ask a question about the notebook documents..."
                 onkeypress="handleKeyPress(event)">
             
             <!-- Submit Button -->
@@ -108,139 +122,87 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Application Logic -->
     <script>
-        // Research Data Extracted from Notebook Sources with Citations
-        const notebookData = [
-            {
-                id: 1,
-                category: "Providence & History",
-                title: "The 4,000-Year Preparation",
-                content: "After selecting the people of Israel as the chosen people, Heavenly Parent had to guide the work to indemnify what had gone wrong. It was not until a national foundation was formed that Heavenly Parent was able to send the Only Begotten Son Jesus Christ whom Heavenly Parent could call 'my son.' It took 4,000 years of biblical history.[cite: 2]"
-            },
-            {
-                id: 2,
-                category: "Christianity",
-                title: "John Calvin and the Reformation",
-                content: "In the 16th century, John Calvin formulated his teachings related to the Reformation and in 1543 wrote his treatise The Necessity of Reforming the Church. Four hundred years later, in 1943, Heaven sent the Only Begotten Daughter within the community of Christian faithful in Korea.[cite: 2]"
-            },
-            {
-                id: 3,
-                category: "Korean Heritage",
-                title: "The Founding Legend of Dangun",
-                content: "The Han people's sacred connection to Heaven stretches back to their very origins. Their founding legend speaks of Dangun, who established a nation guided by the noble ideal of hong-ik in-gan—devotion to the welfare of all humankind. This became the philosophical foundation of a culture that maintained its identity through millennia.[cite: 3]"
-            },
-            {
-                id: 4,
-                category: "True Parents",
-                title: "Birth of the Only Begotten Daughter",
-                content: "The Only Begotten Daughter, True Mother, was born into a family with three generations of only daughters and a strong Christian foundation. Born in 1943, her birth marked the decisive moment that concluded Heavenly Parent's 6,000-year history of the providence of salvation.[cite: 2]"
-            },
-            {
-                id: 5,
-                category: "Korean Heritage",
-                title: "Ritual Offerings to Heaven",
-                content: "The Han people worshipped and offered rituals to Heaven (Heavenly Parent), including prayers for good harvests and for peace. During the time of the kingdom of Gojoseon, they conducted such rituals, feeling themselves to be descendants of Heaven (Cheonson), establishing a peace-loving culture.[cite: 3]"
-            },
-            {
-                id: 6,
-                category: "Providence & History",
-                title: "The Dong-yi People and the Han Dynasty",
-                content: "One of the tribes among the descendants of the Semites moved to East Asia and later settled on the Korean Peninsula becoming the Han people. The Han dynasty of ancient Korea emerged from the Dong-yi (Eastern Yi) People who had migrated eastward, laying the groundwork for the spiritual destiny of the Han people.[cite: 3]"
-            },
-            {
-                id: 7,
-                category: "True Parents",
-                title: "Ideal of True Parents in Creation",
-                content: "God's original purpose of creation was for Adam to become the True Father of humankind and for Eve to become the True Mother of humankind. In order to return to the purpose of creation, God had to carry out the providence of re-creating Adam through the birth of Jesus.[cite: 1]"
-            },
-            {
-                id: 8,
-                category: "Korean Heritage",
-                title: "The Hyojeong (Filial Heart) Culture",
-                content: "The hyojeong (filial heart) of the Han people, expressed in the loving response of children in gratitude for the profound love they have received from their parents, resulted in historical texts and legends of filial piety. Revering the Heavenly Parent, they considered filial piety as the fundamental virtue.[cite: 3]"
-            },
-            {
-                id: 9,
-                category: "Christianity",
-                title: "Korean Christianity's Unique Root",
-                content: "Unlike many other nations where the Christian faith arrived through foreign missionaries, Korea's earliest Christians sought out the gospel themselves, traveling to China to learn about Christ and returning to establish churches even before the evangelism of Western missionaries began to bear fruit.[cite: 3]"
-            },
-            {
-                id: 10,
-                category: "Providence & History",
-                title: "The Pacific Rim Civilization",
-                content: "The Pacific Rim civilization is the final destination of history and of all civilizations. At its center lies the Korean Peninsula, where the Will of the Heavenly Parent, the Creator, can finally be fulfilled. A historic new era will dawn welcoming the liberation of our Heavenly Parent's homeland.[cite: 3]"
-            }
-        ];
+        // ==========================================
+        // ⚠️ PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
+        // ==========================================
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzW3_EZJVRneBD9NIjtPKScWdWS0MUZjT9NyddPjajDg4CL5oCsBOI7kDXLaaaLc-cGow/exec";
 
         // DOM Elements
         const searchInput = document.getElementById('searchInput');
         const submitBtn = document.getElementById('submitBtn');
-        const filterBtns = document.querySelectorAll('.filter-btn');
         const resultsGrid = document.getElementById('resultsGrid');
         const chatArea = document.getElementById('chatArea');
 
-        // State
-        let currentFilter = 'All';
+        // Helper function for quick suggestion pills
+        function setQuery(text) {
+            searchInput.value = text;
+            processQuery();
+        }
 
-        // Event Listeners for Filters
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                filterBtns.forEach(b => {
-                    b.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30', 'border-blue-500');
-                    b.classList.add('bg-slate-800', 'text-slate-300', 'border-slate-600');
-                });
-                
-                const target = e.target;
-                target.classList.remove('bg-slate-800', 'text-slate-300', 'border-slate-600');
-                target.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30', 'border-blue-500');
-                
-                currentFilter = target.getAttribute('data-filter');
-                
-                // Optional: Auto-trigger a contextual message when a filter is clicked
-                if (currentFilter !== 'All') {
-                    searchInput.value = `Show me insights about ${currentFilter}`;
-                    processQuery();
-                }
-            });
-        });
-
-        // Handle Enter Key
+        // Handle Enter Key in input field
         function handleKeyPress(e) {
             if (e.key === 'Enter') {
                 processQuery();
             }
         }
 
-        // Process Query (Simulate NotebookLM retrieval & synthesis)
-        function processQuery() {
+        // Main function to process the user query
+        async function processQuery() {
             const query = searchInput.value.trim();
             if (!query) return;
 
             // 1. Add User Message to UI
             appendUserMessage(query);
 
-            // 2. Clear input & disable button temporarily
+            // 2. Clear input & disable button temporarily to show loading state
             searchInput.value = '';
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
-            // 3. Simulate processing delay
-            setTimeout(() => {
-                generateResponse(query);
+            try {
+                // 3. Make the API request to the Google Apps Script Backend
+                // We use 'text/plain;charset=utf-8' to bypass strict CORS preflight on static sites
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                    body: JSON.stringify({ query: query })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // 4. Display the AI's generated reply
+                displayAiResponse(data.reply);
+
+            } catch (error) {
+                console.error("Connection Error:", error);
+                // Check if the user forgot to add the URL
+                if (WEB_APP_URL === "YOUR_COPIED_WEB_APP_URL_HERE") {
+                    displayAiResponse("⚠️ **Configuration Error:** You need to paste your Google Apps Script URL into the `WEB_APP_URL` variable at the bottom of the HTML file.");
+                } else {
+                    displayAiResponse("Sorry, there was an error connecting to the AI backend. Please make sure your Google Apps Script is deployed as a Web App accessible to 'Anyone'.");
+                }
+            } finally {
+                // 5. Restore submit button to normal state
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<span>Submit</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
-            }, 800);
+                searchInput.focus();
+            }
         }
 
+        // Render the user's bubble
         function appendUserMessage(text) {
             const msgHTML = `
                 <div class="flex gap-4 justify-end message-enter">
                     <div class="bg-blue-600 border border-blue-500 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-md">
-                        <p class="text-white text-base">${text}</p>
+                        <p class="text-white text-base leading-relaxed">${escapeHTML(text)}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0 border border-slate-600">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0 border border-slate-600 shadow-md">
                         <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     </div>
                 </div>
@@ -249,64 +211,46 @@
             scrollToBottom();
         }
 
-        function generateResponse(query) {
-            // Filter Data based on Query and Category
-            const filteredData = notebookData.filter(item => {
-                const matchesFilter = currentFilter === 'All' || item.category === currentFilter;
-                const matchesSearch = item.title.toLowerCase().includes(query.toLowerCase()) || 
-                                      item.content.toLowerCase().includes(query.toLowerCase());
-                return matchesFilter && matchesSearch;
-            });
+        // Render the AI's bubble
+        function displayAiResponse(text) {
+            // Convert simple line breaks to HTML breaks and bold tags for basic markdown support
+            let formattedText = escapeHTML(text)
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
 
-            let responseHTML = '';
-
-            if (filteredData.length === 0) {
-                responseHTML = `
-                    <div class="flex gap-4 message-enter">
-                        <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl rounded-tl-none max-w-[85%] shadow-md">
-                            <p class="text-slate-300">I couldn't find any specific insights in the notebook matching "${query}" under the current category filter. Try adjusting your search terms or selecting "All Topics".</p>
-                        </div>
+            const responseHTML = `
+                <div class="flex gap-4 message-enter">
+                    <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                     </div>
-                `;
-            } else {
-                // Synthesize a response layout based on found chunks
-                const chunksHTML = filteredData.map(item => `
-                    <div class="mt-3 p-4 bg-slate-900/50 rounded-xl border border-slate-700/50 hover:border-slate-500 transition-colors">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-700 text-slate-300">${item.category}</span>
-                            <h4 class="text-blue-400 font-medium text-sm">${item.title}</h4>
-                        </div>
-                        <p class="text-slate-300 text-sm leading-relaxed">${item.content}</p>
+                    <div class="glass-card p-5 rounded-2xl rounded-tl-none w-full max-w-[85%] shadow-md">
+                        <p class="text-slate-300 leading-relaxed text-sm md:text-base">${formattedText}</p>
                     </div>
-                `).join('');
-
-                responseHTML = `
-                    <div class="flex gap-4 message-enter">
-                        <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        </div>
-                        <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl rounded-tl-none w-full max-w-[85%] shadow-md">
-                            <p class="text-white font-medium mb-3">Based on your notebook sources, here are the relevant insights:</p>
-                            <div class="flex flex-col gap-2">
-                                ${chunksHTML}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
+                </div>
+            `;
             resultsGrid.insertAdjacentHTML('beforeend', responseHTML);
             scrollToBottom();
         }
 
+        // Smooth scroll to the latest message
         function scrollToBottom() {
             chatArea.scrollTo({
                 top: chatArea.scrollHeight,
                 behavior: 'smooth'
             });
+        }
+
+        // Basic HTML escaping to prevent XSS in user input rendering
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
         }
     </script>
 </body>
